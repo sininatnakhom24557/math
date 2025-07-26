@@ -1,0 +1,110 @@
+<!-- rsa-step3.html -->
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <title>RSA - ขั้นตอนที่ 3: คำนวณ n และ φ(n)</title>
+  <style>
+    body {
+      font-family: "Arial", sans-serif;
+      background-color: #f9f9f9;
+      padding: 40px;
+    }
+    .container {
+      max-width: 480px;
+      margin: auto;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      padding: 30px;
+    }
+    h2 {
+      text-align: center;
+      color: #222;
+    }
+    .result {
+      margin-top: 20px;
+      background-color: #dbeafe;
+      border-left: 6px solid #3b82f6;
+      padding: 15px;
+      font-size: 16px;
+      color: #1e3a8a;
+    }
+    .error {
+      background-color: #fee2e2;
+      border-left: 6px solid #ef4444;
+      color: #991b1b;
+    }
+    .btns {
+      margin-top: 30px;
+      text-align: center;
+    }
+    a, button {
+      display: inline-block;
+      margin: 0 8px;
+      padding: 10px 20px;
+      background-color: #3b82f6;
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+    }
+    a:hover, button:hover {
+      background-color: #2563eb;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>RSA: ขั้นตอนที่ 3</h2>
+
+    <div id="output" class="result">กำลังคำนวณค่า n และ φ(n)...</div>
+
+    <div class="btns">
+      <a href="rsa-step2.html">← ย้อนกลับ</a>
+      <button id="nextBtn" style="display:none;">ไปขั้นตอนที่ 4 →</button>
+    </div>
+  </div>
+
+  <script>
+    // ดึงค่า p, q จาก URL
+    const params = new URLSearchParams(window.location.search);
+    const p = parseInt(params.get("p"));
+    const q = parseInt(params.get("q"));
+
+    const output = document.getElementById("output");
+    const nextBtn = document.getElementById("nextBtn");
+
+    // ตรวจสอบค่า p, q ว่ามีค่าถูกต้องหรือไม่
+    if (!p || !q || isNaN(p) || isNaN(q)) {
+      output.classList.remove("result");
+      output.classList.add("error");
+      output.textContent = "❌ ไม่พบค่า p หรือ q ที่ถูกต้อง กรุณาย้อนกลับไปกรอกใหม่";
+      nextBtn.style.display = "none";
+    } else {
+      // คำนวณ n และ phi(n)
+      const n = p * q;
+      const phi = (p - 1) * (q - 1);
+
+      output.innerHTML = `
+        ✅ <strong>ค่าที่ได้รับจากขั้นตอนที่ 2:</strong><br>
+        p = <strong>${p}</strong><br>
+        q = <strong>${q}</strong><br><br>
+        📌 <strong>คำนวณค่า:</strong><br>
+        n = p * q = <strong>${p} * ${q} = ${n}</strong><br>
+        φ(n) = (p - 1)(q - 1) = <strong>${p - 1} * ${q - 1} = ${phi}</strong>
+      `;
+
+      // เปิดปุ่มไปขั้นตอนที่ 4 พร้อมส่งค่าต่อไป
+      nextBtn.style.display = "inline-block";
+      nextBtn.onclick = () => {
+        window.location.href = `rsa-step4.html?n=${n}&phi=${phi}`;
+      };
+    }
+  </script>
+
+</body>
+</html>

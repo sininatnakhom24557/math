@@ -1,0 +1,111 @@
+
+<!DOCTYPE html>
+<html lang="th">
+<br>
+<head>
+  <meta charset="UTF-8">
+  <title>RSA - ขั้นตอนที่ 1: กรอกจำนวนเฉพาะ</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      background-color: #f4f4f4;
+    }
+    .container {
+      max-width: 500px;
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      margin: auto;
+    }
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+    input[type="number"] {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      box-sizing: border-box;
+    }
+    button {
+      margin-top: 20px;
+      padding: 12px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+      font-size: 16px;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    .note {
+      font-size: 14px;
+      color: #666;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>RSA: ขั้นตอนที่ 1</h2>
+    <p>กรอกจำนวนเฉพาะสองจำนวนที่แตกต่างกันเพื่อใช้ในการสร้างกุญแจ:</p>
+
+    <form id="primeForm">
+      <label for="prime1">จำนวนเฉพาะที่ 1 (p):</label>
+      <input type="number" id="prime1" name="prime1" required>
+
+      <label for="prime2">จำนวนเฉพาะที่ 2 (q):</label>
+      <input type="number" id="prime2" name="prime2" required>
+
+      <button type="submit">ดำเนินการต่อ</button>
+    </form>
+
+    <div class="note">
+      * หมายเหตุ: ทั้งสองค่าควรเป็นจำนวนเฉพาะและไม่เท่ากัน
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('primeForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      const p = parseInt(document.getElementById('prime1').value);
+      const q = parseInt(document.getElementById('prime2').value);
+
+      if (p === q) {
+        alert("กรุณากรอกจำนวนเฉพาะที่แตกต่างกัน");
+        return;
+      }
+
+      function isPrime(n) {
+        if (n <= 1) return false;
+        if (n <= 3) return true;
+        if (n % 2 === 0 || n % 3 === 0) return false;
+        for (let i = 5; i * i <= n; i += 6) {
+          if (n % i === 0 || n % (i + 2) === 0) return false;
+        }
+        return true;
+      }
+
+      if (!isPrime(p) || !isPrime(q)) {
+        alert("กรุณากรอกจำนวนเฉพาะที่ถูกต้องทั้งสองค่า");
+        return;
+      }
+
+      // ✅ ถ้าตรวจสอบผ่าน → ไปยังขั้นตอนที่ 2 พร้อมส่ง p, q
+      window.location.href = `rsa-step2.html?p=${p}&q=${q}`;
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <title>RSA - ขั้นตอนที่ 4: เลือกค่า e (Public Exponent)</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f9f9f9;
+      padding: 40px;
+    }
+    .container {
+      max-width: 480px;
+      margin: auto;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      padding: 30px;
+    }
+    h2 {
+      text-align: center;
+      color: #222;
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #333;
+    }
+    input[type="number"] {
+      width: 100%;
+      padding: 8px 12px;
+      font-size: 16px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      margin-bottom: 15px;
+      box-sizing: border-box;
+    }
+    .btns {
+      text-align: center;
+      margin-top: 20px;
+    }
+    button, a {
+      background-color: #2563eb;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      text-decoration: none;
+      margin: 0 8px;
+    }
+    button:hover, a:hover {
+      background-color: #1e40af;
+    }
+    .message {
+      margin-top: 15px;
+      font-weight: 600;
+    }
+    .error {
+      color: #dc2626;
+    }
+    .success {
+      color: #16a34a;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>RSA: ขั้นตอนที่ 4</h2>
+    <p>เลือกค่า <strong>e</strong> ที่เป็นจำนวนเต็มบวก โดย <br>
+      1 &lt; e &lt; φ(n) และ gcd(e, φ(n)) = 1 (ไม่มีตัวหารร่วมกับ φ(n) นอกจาก 1)</p>
+
+    <div>
+      <label for="inputE">กรอกค่า e:</label>
+      <input type="number" id="inputE" min="2" />
+      <div id="message" class="message"></div>
+    </div>
+
+    <div class="btns">
+      <a href="rsa-step3.html">← ย้อนกลับ</a>
+      <button id="nextBtn" disabled>ไปขั้นตอนที่ 5 →</button>
+    </div>
+  </div>
+
+  <script>
+    // ดึงค่า n, phi จาก URL
+    const params = new URLSearchParams(window.location.search);
+    const n = parseInt(params.get('n'));
+    const phi = parseInt(params.get('phi'));
+
+    const inputE = document.getElementById('inputE');
+    const message = document.getElementById('message');
+    const nextBtn = document.getElementById('nextBtn');
+
+    // ฟังก์ชันหาค่า gcd (Euclidean algorithm)
+    function gcd(a, b) {
+      while (b !== 0) {
+        let temp = b;
+        b = a % b;
+        a = temp;
+      }
+      return a;
+    }
+
+    // ตรวจสอบค่า e
+    function validateE() {
+      const e = parseInt(inputE.value);
+      if (isNaN(e)) {
+        message.textContent = "กรุณากรอกจำนวนเต็มที่ถูกต้อง";
+        message.className = "message error";
+        nextBtn.disabled = true;
+        return;
+      }
+      if (e <= 1 || e >= phi) {
+        message.textContent = `ค่า e ต้องมากกว่า 1 และน้อยกว่า φ(n) = ${phi}`;
+        message.className = "message error";
+        nextBtn.disabled = true;
+        return;
+      }
+      if (gcd(e, phi) !== 1) {
+        message.textContent = `ค่า e = ${e} ไม่เป็น coprime กับ φ(n) = ${phi} (มีตัวหารร่วมมากกว่า 1)`;
+        message.className = "message error";
+        nextBtn.disabled = true;
+        return;
+      }
+      message.textContent = `ค่า e = ${e} ถูกต้องและเหมาะสม`;
+      message.className = "message success";
+      nextBtn.disabled = false;
+    }
+
+    inputE.addEventListener('input', validateE);
+
+    // ไปขั้นตอนที่ 5 (ส่งค่าต่อ)
+    nextBtn.addEventListener('click', () => {
+      const e = parseInt(inputE.value);
+      window.location.href = `rsa-step5.html?n=${n}&phi=${phi}&e=${e}`;
+    });
+
+    // ตรวจสอบว่ามีค่า n และ phi หรือไม่ ถ้าไม่ให้แจ้งเตือน
+    if (!n || !phi || isNaN(n) || isNaN(phi)) {
+      message.textContent = "❌ ไม่พบค่า n หรือ φ(n) กรุณากลับไปกรอกใหม่";
+      message.className = "message error";
+      inputE.disabled = true;
+      nextBtn.disabled = true;
+    }
+  </script>
+</body>
+</html>

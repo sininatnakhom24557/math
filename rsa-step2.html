@@ -1,0 +1,122 @@
+<!-- rsa-step2.html -->
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>RSA - ขั้นตอนที่ 2: ตรวจสอบจำนวนเฉพาะ</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f4f4f4;
+      padding: 40px;
+    }
+    .container {
+      max-width: 500px;
+      margin: auto;
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+    .result {
+      margin-top: 20px;
+      padding: 15px;
+      font-size: 16px;
+      background-color: #e8f5e9;
+      border-left: 6px solid #4CAF50;
+    }
+    .error {
+      background-color: #ffebee;
+      border-left: 6px solid #f44336;
+    }
+    .btns {
+      margin-top: 30px;
+      text-align: center;
+    }
+    .btns a, .btns button {
+      display: inline-block;
+      margin: 0 10px;
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: #fff;
+      text-decoration: none;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .btns a:hover, .btns button:hover {
+      background-color: #388e3c;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>RSA: ขั้นตอนที่ 2</h2>
+    <div id="output" class="result">กำลังตรวจสอบ...</div>
+
+    <div class="btns">
+      <a href="rsa-step1.html">← ย้อนกลับ</a>
+      <button id="nextBtn" style="display: none;">ไปขั้นตอนที่ 3 →</button>
+    </div>
+  </div>
+
+  <script>
+    function getParams() {
+      const params = new URLSearchParams(window.location.search);
+      return {
+        p: parseInt(params.get("p")),
+        q: parseInt(params.get("q"))
+      };
+    }
+
+    function isPrime(n) {
+      if (n <= 1) return false;
+      if (n <= 3) return true;
+      if (n % 2 === 0 || n % 3 === 0) return false;
+      for (let i = 5; i * i <= n; i += 6) {
+        if (n % i === 0 || n % (i + 2) === 0) return false;
+      }
+      return true;
+    }
+
+    const { p, q } = getParams();
+    const output = document.getElementById("output");
+    const nextBtn = document.getElementById("nextBtn");
+
+    if (!p || !q || isNaN(p) || isNaN(q)) {
+      output.classList.add("error");
+      output.innerHTML = "❌ ไม่พบค่า p และ q ที่ถูกต้อง กรุณาย้อนกลับไปกรอกใหม่";
+    } else {
+      const pIsPrime = isPrime(p);
+      const qIsPrime = isPrime(q);
+
+      if (pIsPrime && qIsPrime) {
+        output.innerHTML = `
+          ✅ <strong>ตรวจสอบสำเร็จ</strong><br>
+          - p = ${p} → ✅ เป็นจำนวนเฉพาะ<br>
+          - q = ${q} → ✅ เป็นจำนวนเฉพาะ
+        `;
+        nextBtn.style.display = "inline-block";
+        nextBtn.onclick = () => {
+          window.location.href = `rsa-step3.html?p=${p}&q=${q}`;
+        };
+      } else {
+        output.classList.add("error");
+        output.innerHTML = `
+          ❌ <strong>ตรวจสอบล้มเหลว</strong><br>
+          - p = ${p} → ${pIsPrime ? "✅ เป็นจำนวนเฉพาะ" : "❌ ไม่ใช่จำนวนเฉพาะ"}<br>
+          - q = ${q} → ${qIsPrime ? "✅ เป็นจำนวนเฉพาะ" : "❌ ไม่ใช่จำนวนเฉพาะ"}<br><br>
+          กรุณากลับไปแก้ไขให้ถูกต้อง
+        `;
+      }
+    }
+  </script>
+
+</body>
+</html>
