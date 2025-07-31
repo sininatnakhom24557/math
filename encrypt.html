@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RSA Encrypt</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-r from-purple-200 via-pink-200 to-red-200 min-h-screen flex items-center justify-center p-6">
+
+  <div class="bg-white shadow-2xl rounded-3xl p-10 max-w-4xl w-full">
+    <h1 class="text-4xl font-extrabold text-center text-purple-700 mb-8">🔐 RSA Encrypt</h1>
+
+    <div class="grid grid-cols-3 gap-6 mb-6">
+      <div>
+        <label class="block font-semibold text-purple-700 mb-2">Public Key (e)</label>
+        <input type="number" id="e" value="17" class="w-full p-3 rounded-lg border border-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500" />
+      </div>
+      <div>
+        <label class="block font-semibold text-purple-700 mb-2">Modulus (n)</label>
+        <input type="number" id="n" value="3233" class="w-full p-3 rounded-lg border border-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500" />
+      </div>
+      <div class="flex items-end">
+        <a href="decrypt.html" class="block w-full bg-green-500 hover:bg-green-600 text-white py-3 rounded-xl text-center font-semibold shadow-md transition">
+          🔓 ไปหน้าถอดรหัส
+        </a>
+      </div>
+    </div>
+
+    <label class="block font-semibold text-purple-700 mb-2">ข้อความต้นฉบับ (Plaintext)</label>
+    <textarea id="plaintext" rows="4" placeholder="พิมพ์ข้อความที่นี่..." class="w-full p-4 rounded-lg border border-purple-300 resize-none focus:outline-none focus:ring-2 focus:ring-purple-500 mb-6"></textarea>
+
+    <label class="block font-semibold text-purple-700 mb-2">ข้อความที่เข้ารหัส (Ciphertext)</label>
+    <textarea id="ciphertext" rows="4" readonly class="w-full p-4 rounded-lg border border-purple-200 bg-purple-50 text-purple-800 resize-none"></textarea>
+
+    <button onclick="encrypt()" class="mt-6 w-full bg-purple-700 hover:bg-purple-800 text-white font-bold py-4 rounded-2xl shadow-lg transition">
+      🚀 เข้ารหัสข้อความ
+    </button>
+  </div>
+
+  <script>
+  function encrypt() {
+    const e = BigInt(document.getElementById("e").value);
+    const n = BigInt(document.getElementById("n").value);
+    const plainText = document.getElementById("plaintext").value;
+
+    const encoder = new TextEncoder(); // รองรับ UTF-8 ทุกภาษา
+    const byteArray = encoder.encode(plainText);
+
+    let cipherNums = [];
+    for (let byte of byteArray) {
+      const encrypted = BigInt(byte) ** e % n;
+      cipherNums.push(encrypted.toString());
+    }
+
+    document.getElementById("ciphertext").value = cipherNums.join(" ");
+  }
+</script>
+
+
+</body>
+</html>
